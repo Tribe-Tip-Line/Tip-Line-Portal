@@ -4,7 +4,7 @@ block content
     h2 Tip Line Reports
     .success
     .error
-    form(id='form1' action='/add' method= 'post')
+    form(id='form1' action='/addReport' method= 'post')
       input#id(type='hidden', name='id', value='')
       table
         tr
@@ -25,7 +25,6 @@ block content
     table.table
       tbody
         tr
-          th ID
           th Title
           th Location
           th Time
@@ -36,7 +35,6 @@ block content
         if data.length
          each item in data
           tr
-            td #{item['_id']}
             td #{item['title']}
             td #{item['location']}
             td #{item['time']}
@@ -46,7 +44,7 @@ block content
             td
                a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}') Edit
                | &nbsp;&nbsp;
-               a(href='/delete?id=#{item["_id"]}', onclick='return confirm("You are going to delete this record. Continue?")') Delete
+               a(href='/deleteReport?id=#{item["_id"]}', onclick='return confirm("You are going to delete this record. Continue?")') Delete
 
     script(src='https://code.jquery.com/jquery-3.1.1.min.js')
     script.
@@ -61,7 +59,7 @@ block content
 
             method: "GET",
 
-            url: "/fetchdata",
+            url: "/fetchdataReport",
 
             data: { id:  id },
 
@@ -83,7 +81,7 @@ block content
 
             $("#subbtn").val('Edit Report');
 
-            $('#form1').attr('action', '/edit');
+            $('#form1').attr('action', '/editReport');
 
           });
 
