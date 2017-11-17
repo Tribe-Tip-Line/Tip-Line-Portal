@@ -15,6 +15,8 @@ block content
             | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             input#Email(type='text', name='Email', placeholder='Email', value='')
             | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            input#Number(type='text', name='Number', placeholder='Phone Number', value='')
+            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             input#subbtn.btn(type='submit', name='sub', value='Add User')
     table.table
       tbody
@@ -22,6 +24,7 @@ block content
           th First Name
           th Last Name
           th Email
+          th Phone Number
           th Action
         if data.length
          each item in data
@@ -29,6 +32,7 @@ block content
             td #{item['FirstName']}
             td #{item['LastName']}
             td #{item['Email']}
+            td #{item['Number']}
             td
                a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}') Edit
                | &nbsp;&nbsp;
@@ -60,6 +64,8 @@ block content
             $('#LastName').val(data[0]['LastName']);
 
             $('#Email').val(data[0]['Email']);
+            
+            $('#Number').val(data[0]['Number']);
             
             $("#subbtn").val('Edit User');
 

@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
     res.redirect('/reports');
 });
 
-/* GET reports listing. */
+
 router.get('/reports', function(req, res, next) {
 
   MongoClient.connect(dburl, function(err, db) {
@@ -37,7 +37,7 @@ router.get('/reports', function(req, res, next) {
 
 });
 
-/* GET reports listing. */
+
 router.get('/users', function(req, res, next) {
 
   MongoClient.connect(dburl, function(err, db) {
@@ -60,30 +60,6 @@ router.get('/users', function(req, res, next) {
 
 });
 
-///* GET reports listing. */
-//router.get('/numbers', function(req, res, next) {
-//
-//  MongoClient.connect(dburl, function(err, db) {
-//
-//    if(err) {  console.log(err); throw err;  }
-//
-//    data = '';
-//
-//    db.collection('reports').find().toArray(function(err, docs){
-//
-//      if(err) throw err;
-//
-//      res.render('index.jade', {data: docs});
-//
-//      db.close();
-//
-//    });
-//
-//  });
-//
-//});
-
-/* GET reports listing. */
 router.get('/keys', function(req, res, next) {
 
   MongoClient.connect(dburl, function(err, db) {
@@ -106,7 +82,28 @@ router.get('/keys', function(req, res, next) {
 
 });
 
-// ADD
+
+router.get('/numbers', function(req, res, next) {
+
+  MongoClient.connect(dburl, function(err, db) {
+
+    if(err) {  console.log(err); throw err;  }
+
+    data = '';
+
+    db.collection('hotline_numbers').find().toArray(function(err, docs){
+
+      if(err) throw err;
+
+      res.render('hotline.jade', {data: docs});
+
+      db.close();
+
+    });
+
+  });
+
+});
 
 router.post('/addReport', function(req, res, next) {
 
@@ -124,7 +121,7 @@ router.post('/addReport', function(req, res, next) {
 
       db.close();
 
-      res.redirect('/reports');   
+      res.redirect('/reports');
   });
 
   });
@@ -139,7 +136,7 @@ router.post('/addUser', function(req, res, next) {
 
     var collection = db.collection('users');
 
-    var user = {  FirstName: req.body.FirstName,  LastName: req.body.LastName, Email: req.body.Email };
+    var user = {  FirstName: req.body.FirstName,  LastName: req.body.LastName, Email: req.body.Email, Number: req.body.Number };
 
     collection.insert(user, function(err, result) {
 
@@ -171,6 +168,29 @@ router.post('/addKey', function(req, res, next) {
       db.close();
 
       res.redirect('/keys');   
+  });
+
+  });
+
+});
+
+router.post('/addNumber', function(req, res, next) {
+
+  MongoClient.connect(dburl, function(err, db) {
+
+    if(err) { throw err;  }
+
+    var collection = db.collection('hotline_numbers');
+      
+    var number = {  country: req.body.country, number: req.body.number };
+
+    collection.insert(number, function(err, result) {
+
+    if(err) { throw err; }
+
+      db.close();
+
+      res.redirect('/numbers');   
   });
 
   });
@@ -243,6 +263,28 @@ router.get('/fetchdataKey', function(req, res, next) {
 
 });
 
+router.get('/fetchdataNumber', function(req, res, next) {
+
+   var id = req.query.id;
+
+   MongoClient.connect(dburl, function(err, db) {
+
+    if(err) {  throw err;  }
+
+    db.collection('hotline_numbers').find({_id: new mongodb.ObjectID(id)}).toArray(function(err, docs){
+
+      if(err) throw err;
+
+      res.send(docs);
+
+      db.close();
+
+    });
+
+  });
+
+});
+
 router.post('/editReport', function(req, res, next){ 
   MongoClient.connect(dburl, function(err, db) {
     if(err) { throw err; } 
@@ -269,10 +311,11 @@ router.post('/editUser', function(req, res, next){
     var FirstName = req.body.FirstName;
     var LastName = req.body.LastName;
     var Email = req.body.Email;
+    var Number = req.body.Number;
     collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
-    { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email } }, function(err, result) { 
+    { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email, 'Number': Number } }, function(err, result) { 
       if(err) { throw err; } 
-      db.close(); 
+      db.close();
       res.redirect('/users'); 
     }); 
   });
@@ -288,6 +331,21 @@ router.post('/editKey', function(req, res, next){
       if(err) { throw err; } 
       db.close(); 
       res.redirect('/keys'); 
+    }); 
+  });
+});
+
+router.post('/editNumber', function(req, res, next){ 
+  MongoClient.connect(dburl, function(err, db) {
+    if(err) { throw err; } 
+    var collection   = db.collection('hotline_numbers'); 
+    var country = req.body.country;
+    var number = req.body.number;
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
+    { $set: {'country': country, 'number': number } }, function(err, result) { 
+      if(err) { throw err; } 
+      db.close(); 
+      res.redirect('/numbers'); 
     }); 
   });
 });
@@ -335,6 +393,22 @@ router.get('/deleteKey', function(req, res, next) {
       }else{
          db.close();
           res.redirect('/keys');
+      }
+    });
+  });
+});
+
+router.get('/deleteNumber', function(req, res, next) {
+  var id = req.query.id;
+  MongoClient.connect(dburl, function(err, db) {
+    if(err) { throw err;  }
+    db.collection('hotline_numbers', function(err, reports) {
+      reports.deleteOne({_id: new mongodb.ObjectID(id)});
+      if (err){
+       throw err;
+      }else{
+         db.close();
+          res.redirect('/numbers');
       }
     });
   });
