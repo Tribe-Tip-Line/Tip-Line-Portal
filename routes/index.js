@@ -11,7 +11,11 @@ var MongoClient = mongodb.MongoClient;
 var dburl = "mongodb://tipdev:tipdev123567@ds123534.mlab.com:23534/tiplineapplication";
 
 router.get('/', function(req, res, next) {
-    res.redirect('/reports');
+    res.redirect('/login');
+});
+
+router.get('/login', function(req, res, next) {
+  res.render('login.jade');
 });
 
 
@@ -349,6 +353,16 @@ router.post('/editNumber', function(req, res, next){
     }); 
   });
 });
+
+router.post('/attemptLogin', function (req, res) {
+  if (req.body.username === 'user' && req.body.password === 'pass') {
+    res.redirect('/reports');
+  } else {
+    req.flash('error', 'Username and password are incorrect');
+    res.redirect('/');
+  }
+});
+
 
 router.get('/deleteReport', function(req, res, next) {
   var id = req.query.id;
