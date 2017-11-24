@@ -14,7 +14,6 @@ router.get('/', function(req, res, next) {
     res.redirect('/reports');
 });
 
-
 router.get('/reports', function(req, res, next) {
 
   MongoClient.connect(dburl, function(err, db) {
@@ -27,7 +26,7 @@ router.get('/reports', function(req, res, next) {
 
       if(err) throw err;
 
-      res.render('report.jade', {data: docs});
+      res.render('report.jade', {title: 'Tip Line: Reports', data: docs});
 
       db.close();
 
@@ -50,7 +49,7 @@ router.get('/users', function(req, res, next) {
 
       if(err) throw err;
 
-      res.render('user.jade', {data: docs});
+      res.render('user.jade', {title: 'Tip Line: Users', data: docs});
 
       db.close();
 
@@ -72,7 +71,7 @@ router.get('/keys', function(req, res, next) {
 
       if(err) throw err;
 
-      res.render('key.jade', {data: docs});
+      res.render('key.jade', {title: 'Tip Line: Keys', data: docs});
 
       db.close();
 
@@ -95,7 +94,7 @@ router.get('/numbers', function(req, res, next) {
 
       if(err) throw err;
 
-      res.render('hotline.jade', {data: docs});
+      res.render('hotline.jade', {title: 'Tip Line: Hotline Numbers', data: docs});
 
       db.close();
 
