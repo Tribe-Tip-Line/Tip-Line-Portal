@@ -1,0 +1,13 @@
+extends layout
+block content
+
+  body
+    block content
+      .container
+        form.form-signin(action="/registerAdmin", method="post")
+          h2.form-signin-heading Registration
+          input.input-block-level(type="text", name="username", placeholder="Username")
+          input.input-block-level(type="password", name="password", placeholder="Password")
+          input.input-block-level(type="passwordConfirm", name="passwordConfirm", placeholder="Confirm Password")
+          p
+          button.btn.btn-large.btn-primary(type="submit") Register

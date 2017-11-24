@@ -18,6 +18,10 @@ router.get('/login', function(req, res, next) {
   res.render('login.jade');
 });
 
+router.get('/registration', function(req, res, next) {
+  res.render('registration.jade');
+});
+
 router.get('/reports', function(req, res, next) {
 
   MongoClient.connect(dburl, function(err, db) {
@@ -147,7 +151,7 @@ router.post('/addUser', function(req, res, next) {
 
       db.close();
 
-      res.redirect('/users');   
+      res.redirect('/users');
   });
 
   });
@@ -170,7 +174,7 @@ router.post('/addKey', function(req, res, next) {
 
       db.close();
 
-      res.redirect('/keys');   
+      res.redirect('/keys');
   });
 
   });
@@ -184,7 +188,7 @@ router.post('/addNumber', function(req, res, next) {
     if(err) { throw err;  }
 
     var collection = db.collection('hotline_numbers');
-      
+
     var number = {  country: req.body.country, number: req.body.number };
 
     collection.insert(number, function(err, result) {
@@ -193,7 +197,7 @@ router.post('/addNumber', function(req, res, next) {
 
       db.close();
 
-      res.redirect('/numbers');   
+      res.redirect('/numbers');
   });
 
   });
@@ -288,78 +292,110 @@ router.get('/fetchdataNumber', function(req, res, next) {
 
 });
 
-router.post('/editReport', function(req, res, next){ 
+router.post('/editReport', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; } 
-    var collection   = db.collection('reports'); 
+    if(err) { throw err; }
+    var collection   = db.collection('reports');
     var title = req.body.title;
     var location = req.body.location;
     var time = req.body.time;
     var date = req.body.date;
     var flight_num = req.body.flight_num;
     var status = req.body.status;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
-    { $set: {'title': title, 'location': location, 'time': time, date: date, flight_num: flight_num, status: status } }, function(err, result) { 
-      if(err) { throw err; } 
-      db.close(); 
-      res.redirect('/reports'); 
-    }); 
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
+    { $set: {'title': title, 'location': location, 'time': time, date: date, flight_num: flight_num, status: status } }, function(err, result) {
+      if(err) { throw err; }
+      db.close();
+      res.redirect('/reports');
+    });
   });
 });
 
-router.post('/editUser', function(req, res, next){ 
+router.post('/editUser', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; } 
-    var collection   = db.collection('users'); 
+    if(err) { throw err; }
+    var collection   = db.collection('users');
     var FirstName = req.body.FirstName;
     var LastName = req.body.LastName;
     var Email = req.body.Email;
     var Number = req.body.Number;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
-    { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email, 'Number': Number } }, function(err, result) { 
-      if(err) { throw err; } 
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
+    { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email, 'Number': Number } }, function(err, result) {
+      if(err) { throw err; }
       db.close();
-      res.redirect('/users'); 
-    }); 
+      res.redirect('/users');
+    });
   });
 });
 
-router.post('/editKey', function(req, res, next){ 
+router.post('/editKey', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; } 
-    var collection   = db.collection('registration_keys'); 
+    if(err) { throw err; }
+    var collection   = db.collection('registration_keys');
     var key = req.body.key;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
-    { $set: {'key': key} }, function(err, result) { 
-      if(err) { throw err; } 
-      db.close(); 
-      res.redirect('/keys'); 
-    }); 
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
+    { $set: {'key': key} }, function(err, result) {
+      if(err) { throw err; }
+      db.close();
+      res.redirect('/keys');
+    });
   });
 });
 
-router.post('/editNumber', function(req, res, next){ 
+router.post('/editNumber', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; } 
-    var collection   = db.collection('hotline_numbers'); 
+    if(err) { throw err; }
+    var collection   = db.collection('hotline_numbers');
     var country = req.body.country;
     var number = req.body.number;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
-    { $set: {'country': country, 'number': number } }, function(err, result) { 
-      if(err) { throw err; } 
-      db.close(); 
-      res.redirect('/numbers'); 
-    }); 
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
+    { $set: {'country': country, 'number': number } }, function(err, result) {
+      if(err) { throw err; }
+      db.close();
+      res.redirect('/numbers');
+    });
   });
 });
 
 router.post('/attemptLogin', function (req, res) {
-  if (req.body.username === 'user' && req.body.password === 'pass') {
-    res.redirect('/reports');
+  MongoClient.connect(dburl, function(err, db) {
+    if (err) { throw err; }
+    var collection = db.collection('admins');
+    var adminInfo = collection.find({'Username': req.body.username, 'Password': req.body.password});
+
+
+    var adminExists = adminInfo.count().then(function(numItems) {
+      if (numItems == 1) {
+        res.redirect('/reports');
+      } else {
+        res.redirect('/');
+      }
+    })
+  });
+});
+
+router.post('/registerAdmin', function (req, res) {
+  if (req.body.password === req.body.passwordConfirm) {
+    MongoClient.connect(dburl, function(err, db) {
+      if (err) { throw err; }
+      var collection = db.collection('admins');
+      var adminInfo = collection.find({'Username': req.body.username});
+      var adminExists = adminInfo.count().then(function(numItems) {
+        if (numItems >= 1) {
+          //tell user that the username already exists
+        } else {
+          collection.insertOne({'Username': req.body.username, 'Password': req.body.password});
+
+          res.redirect('/');
+        }
+      })
+    });
   } else {
-    req.flash('error', 'Username and password are incorrect');
-    res.redirect('/');
+    res.redirect('/registration');
+    //tell user that he typed his password wrong
   }
+
+
 });
 
 
