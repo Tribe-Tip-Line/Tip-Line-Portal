@@ -15,7 +15,11 @@ block content
             | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             input#Email(type='text', name='Email', placeholder='Email', value='')
             | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Number(type='text', name='Number', placeholder='Phone Number', value='')
+            input#Phone_Number(type='text', name='Phone_Number', placeholder='Phone Number', value='')
+            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            input#Company(type='text', name='Company', placeholder='Company', value='')
+            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            input#Location(type='text', name='Location', placeholder='Location', value='')
             | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             input#subbtn.btn(type='submit', name='sub', value='Add User')
     table.table
@@ -25,16 +29,20 @@ block content
           th Last Name
           th Email
           th Phone Number
+          th Company
+          th Location
           th Action
         if data.length
          each item in data
-          tr
-            td #{item['FirstName']}
-            td #{item['LastName']}
-            td #{item['Email']}
-            td #{item['Number']}
+          tr(id='#{item["_id"]}')
+            td#firstnameCell #{item['FirstName']}
+            td#lastnameCell #{item['LastName']}
+            td#emailCell #{item['Email']}
+            td#phonenumberCell #{item['Phone_Number']}
+            td#companyCell #{item['Company']}
+            td#locationCell #{item['Location']}
             td
-               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}') Edit
+               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}', id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
                a(href='/deleteUser?id=#{item["_id"]}', onclick='return confirm("You are going to delete this user. Continue?")') Delete
 
@@ -46,33 +54,39 @@ block content
         $('.editlink').on('click', function(){
 
           var id = $(this).data('id');
+          var FirstName = $('#' + id).find("td[id='firstnameCell']");
+          FirstName.attr('contentEditable', 'true');
+          FirstName.attr('style', 'border: 2px solid #000;');
+          var LastName = $('#' + id).find("td[id='lastnameCell']");
+          LastName.attr('contentEditable', 'true');
+          LastName.attr('style', 'border: 2px solid #000;');
+          var Email = $('#' + id).find("td[id='emailCell']");
+          Email.attr('contentEditable', 'true');
+          Email.attr('style', 'border: 2px solid #000;');
+          var Phone_Number = $('#' + id).find("td[id='phonenumberCell']");
+          Phone_Number.attr('contentEditable', 'true');
+          Phone_Number.attr('style', 'border: 2px solid #000;');
+          var Company = $('#' + id).find("td[id='companyCell']");
+          Company.attr('contentEditable', 'true');
+          Company.attr('style', 'border: 2px solid #000;');
+          var Location = $('#' + id).find("td[id='locationCell']");
+          Location.attr('contentEditable', 'true');
+          Location.attr('style', 'border: 2px solid #000;');
+          $('#edit' + id).text('Confirm');
+          $('#edit' + id).click(function() {
+          
+            $.ajax({
 
-          $.ajax({
+                method: "POST",
 
-            method: "GET",
+                url: "/editUser",
 
-            url: "/fetchdataUser",
-
-            data: { id:  id },
-
-          }).done(function( data ) {
-
-            $('#id').val(data[0]['_id']);
-
-            $('#FirstName').val(data[0]['FirstName']);
-
-            $('#LastName').val(data[0]['LastName']);
-
-            $('#Email').val(data[0]['Email']);
-            
-            $('#Number').val(data[0]['Number']);
-            
-            $("#subbtn").val('Edit User');
-
-            $('#form1').attr('action', '/editUser');
-
+                data: { id:  id, FirstName: FirstName.text(), LastName: LastName.text(), Email: Email.text(), Phone_Number: Phone_Number.text(), Company: Company.text(), Location: Location.text() },
+                
+                success: function(response) {
+                            window.location = '/users';
+                        }
+            });
           });
-
         });
-
       });
