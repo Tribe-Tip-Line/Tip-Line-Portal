@@ -360,60 +360,6 @@ router.post('/editNumber', function(req, res, next){
   });
 });
 
-router.post('/attemptLogin', function (req, res) {
-  MongoClient.connect(dburl, function(err, db) {
-    if (err) { throw err; }
-    var collection = db.collection('admins');
-    var adminInfo = collection.findOne({'Username': req.body.username});
-    var hashedPass = adminInfo.Password;
-
-    console.log(hashedPass);
-    if (bcrypt.compareSync(hashedPass, req.body.password)) {
-      res.redirect('/reports');
-    } else {
-      res.redirect('/');
-    }
-    // var adminExists = adminInfo.count().then(function(numItems) {
-    //   if (numItems == 1) {
-    //     res.redirect('/reports');
-    //   } else {
-    //     res.redirect('/');
-    //   }
-    // })
-  });
-});
-
-router.post('/registerAdmin', function (req, res) {
-  if (req.body.password === req.body.passwordConfirm) {
-    MongoClient.connect(dburl, function(err, db) {
-      if (err) { throw err; }
-      var collection = db.collection('admins');
-      var adminInfo = collection.find({'Username': req.body.username});
-      var adminExists = adminInfo.count().then(function(numItems) {
-        if (numItems >= 1) {
-          //tell user that the username already exists
-        } else {
-          bcrypt.genSalt(saltRounds, function(err, salt) {
-            if (err) return next(err);
-            // hash the password along with our new salt
-            bcrypt.hash(req.body.password, salt, function(err, hash) {
-                if (err) return next(err);
-                // override the cleartext password with the hashed one
-                var password = hash;
-                collection.insertOne({'Username': req.body.username, 'Password': password});
-            });
-            res.redirect('/');
-          });s
-        }
-      });
-    });
-  } else {
-    res.redirect('/registration');
-    //tell user that he typed his password wrong
-  }
-});
-
-
 router.get('/deleteReport', function(req, res, next) {
   var id = req.query.id;
   MongoClient.connect(dburl, function(err, db) {
@@ -477,5 +423,66 @@ router.get('/deleteNumber', function(req, res, next) {
     });
   });
 });
+
+//
+//Login and Registration JS things
+//
+
+router.post('/attemptLogin', function (req, res) {
+  MongoClient.connect(dburl, function(err, db) {
+    if (err) { throw err; }
+    var collection = db.collection('admins');
+    var adminInfo = collection.findOne({'Username': req.body.username});
+
+    adminInfo.then(function(information) {
+      if (information != null) {
+        var hashedPass = information.Password;
+        console.log(hashedPass);
+        bcrypt.compare(req.body.password, hashedPass, function(err, result) {
+          console.log(result);
+          if (result == true) {
+            res.redirect('/reports');
+          } else {
+            res.render('login.jade', {error: 'Password is incorrect'});
+          }
+        });
+      } else {
+        res.render('login.jade', {error: 'Invalid Username'});
+      }
+    });
+  });
+});
+
+router.post('/registerAdmin', function (req, res) {
+  if (req.body.password === req.body.passwordConfirm) {
+    MongoClient.connect(dburl, function(err, db) {
+      if (err) { throw err; }
+      var collection = db.collection('admins');
+      var adminInfo = collection.find({'Username': req.body.username});
+      var adminExists = adminInfo.count().then(function(numItems) {
+        if (numItems >= 1) {
+          res.render('registration.jade', {error: 'Username already exists'});
+        } else {
+          bcrypt.genSalt(saltRounds, function(err, salt) {
+            if (err) return next(err);
+            // hash the password along with our new salt
+            bcrypt.hash(req.body.password, salt, function(err, hash) {
+                if (err) return next(err);
+                // override the cleartext password with the hashed one
+                var password = hash;
+                collection.insertOne({'Username': req.body.username, 'Password': password});
+            });
+            res.redirect('/');
+          });s
+        }
+      });
+    });
+  } else {
+    res.render('registration.jade', {error: "Passwords don't match up"});
+  }
+});
+
+
+
 
 module.exports = router;

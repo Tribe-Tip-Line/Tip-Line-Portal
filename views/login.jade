@@ -6,6 +6,7 @@ block content
       .container
         form.form-signin(action="/attemptLogin", method="post")
           h2.form-signin-heading Login
+          p(style='color:red;')= error
           input.input-block-level(type="text", name="username", placeholder="Username")
           input.input-block-level(type="password", name="password", placeholder="Password")
           button.btn.btn-large.btn-primary(type="submit") Sign in
