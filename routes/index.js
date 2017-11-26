@@ -8,6 +8,9 @@ var mongodb = require('mongodb');
 
 var MongoClient = mongodb.MongoClient;
 
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 var dburl = "mongodb://tipdev:tipdev123567@ds123534.mlab.com:23534/tiplineapplication";
 
 const cryptoRandomString = require('crypto-random-string');
@@ -18,6 +21,10 @@ router.get('/', function(req, res, next) {
 
 router.get('/login', function(req, res, next) {
   res.render('login.jade');
+});
+
+router.get('/registration', function(req, res, next) {
+  res.render('registration.jade');
 });
 
 router.get('/reports', function(req, res, next) {
@@ -126,7 +133,7 @@ router.post('/addUser', function(req, res, next) {
 
       db.close();
 
-      res.redirect('/users');   
+      res.redirect('/users');
   });
 
   });
@@ -151,7 +158,7 @@ router.post('/addKey', function(req, res, next) {
 
       db.close();
 
-      res.redirect('/keys');   
+      res.redirect('/keys');
   });
 
   });
@@ -165,7 +172,7 @@ router.post('/addNumber', function(req, res, next) {
     if(err) { throw err;  }
 
     var collection = db.collection('hotline_numbers');
-      
+
     var number = {  country: req.body.country, number: req.body.number };
 
     collection.insert(number, function(err, result) {
@@ -174,7 +181,7 @@ router.post('/addNumber', function(req, res, next) {
 
       db.close();
 
-      res.redirect('/numbers');   
+      res.redirect('/numbers');
   });
 
   });
@@ -225,7 +232,7 @@ router.get('/fetchdataNumber', function(req, res, next) {
 
 });
 
-router.post('/editReport', function(req, res, next){ 
+router.post('/editReport', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
     if(err) { throw err; } 
     var collection   = db.collection('reports'); 
@@ -239,10 +246,10 @@ router.post('/editReport', function(req, res, next){
   });
 });
 
-router.post('/editUser', function(req, res, next){ 
+router.post('/editUser', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; } 
-    var collection   = db.collection('users'); 
+    if(err) { throw err; }
+    var collection   = db.collection('users');
     var FirstName = req.body.FirstName;
     var LastName = req.body.LastName;
     var Email = req.body.Email;
@@ -253,15 +260,15 @@ router.post('/editUser', function(req, res, next){
     { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email, 'Phone_Number': Phone_Number, 'Company': Company, 'Location': Location } }, function(err, result) { 
       if(err) { throw err; } 
       db.close();
-      res.redirect('/users'); 
-    }); 
+      res.redirect('/users');
+    });
   });
 });
 
 router.post('/editNumber', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; } 
-    var collection   = db.collection('hotline_numbers'); 
+    if(err) { throw err; }
+    var collection   = db.collection('hotline_numbers');
     var country = req.body.country;
     var number = req.body.number;
     collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
@@ -272,16 +279,6 @@ router.post('/editNumber', function(req, res, next){
     }); 
   });
 });
-
-router.post('/attemptLogin', function (req, res) {
-  if (req.body.username === 'user' && req.body.password === 'pass') {
-    res.redirect('/reports');
-  } else {
-    req.flash('error', 'Username and password are incorrect');
-    res.redirect('/');
-  }
-});
-
 
 router.get('/deleteReport', function(req, res, next) {
   var id = req.query.id;
@@ -346,5 +343,66 @@ router.get('/deleteNumber', function(req, res, next) {
     });
   });
 });
+
+//
+//Login and Registration JS things
+//
+
+router.post('/attemptLogin', function (req, res) {
+  MongoClient.connect(dburl, function(err, db) {
+    if (err) { throw err; }
+    var collection = db.collection('admins');
+    var adminInfo = collection.findOne({'Username': req.body.username});
+
+    adminInfo.then(function(information) {
+      if (information != null) {
+        var hashedPass = information.Password;
+        console.log(hashedPass);
+        bcrypt.compare(req.body.password, hashedPass, function(err, result) {
+          console.log(result);
+          if (result == true) {
+            res.redirect('/reports');
+          } else {
+            res.render('login.jade', {error: 'Password is incorrect'});
+          }
+        });
+      } else {
+        res.render('login.jade', {error: 'Invalid Username'});
+      }
+    });
+  });
+});
+
+router.post('/registerAdmin', function (req, res) {
+  if (req.body.password === req.body.passwordConfirm) {
+    MongoClient.connect(dburl, function(err, db) {
+      if (err) { throw err; }
+      var collection = db.collection('admins');
+      var adminInfo = collection.find({'Username': req.body.username});
+      var adminExists = adminInfo.count().then(function(numItems) {
+        if (numItems >= 1) {
+          res.render('registration.jade', {error: 'Username already exists'});
+        } else {
+          bcrypt.genSalt(saltRounds, function(err, salt) {
+            if (err) return next(err);
+            // hash the password along with our new salt
+            bcrypt.hash(req.body.password, salt, function(err, hash) {
+                if (err) return next(err);
+                // override the cleartext password with the hashed one
+                var password = hash;
+                collection.insertOne({'Username': req.body.username, 'Password': password});
+            });
+            res.redirect('/');
+          });s
+        }
+      });
+    });
+  } else {
+    res.render('registration.jade', {error: "Passwords don't match up"});
+  }
+});
+
+
+
 
 module.exports = router;
