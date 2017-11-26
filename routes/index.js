@@ -8,6 +8,9 @@ var mongodb = require('mongodb');
 
 var MongoClient = mongodb.MongoClient;
 
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 var dburl = "mongodb://tipdev:tipdev123567@ds123534.mlab.com:23534/tiplineapplication";
 
 router.get('/', function(req, res, next) {
@@ -361,16 +364,22 @@ router.post('/attemptLogin', function (req, res) {
   MongoClient.connect(dburl, function(err, db) {
     if (err) { throw err; }
     var collection = db.collection('admins');
-    var adminInfo = collection.find({'Username': req.body.username, 'Password': req.body.password});
+    var adminInfo = collection.findOne({'Username': req.body.username});
+    var hashedPass = adminInfo.Password;
 
-
-    var adminExists = adminInfo.count().then(function(numItems) {
-      if (numItems == 1) {
-        res.redirect('/reports');
-      } else {
-        res.redirect('/');
-      }
-    })
+    console.log(hashedPass);
+    if (bcrypt.compareSync(hashedPass, req.body.password)) {
+      res.redirect('/reports');
+    } else {
+      res.redirect('/');
+    }
+    // var adminExists = adminInfo.count().then(function(numItems) {
+    //   if (numItems == 1) {
+    //     res.redirect('/reports');
+    //   } else {
+    //     res.redirect('/');
+    //   }
+    // })
   });
 });
 
@@ -384,18 +393,24 @@ router.post('/registerAdmin', function (req, res) {
         if (numItems >= 1) {
           //tell user that the username already exists
         } else {
-          collection.insertOne({'Username': req.body.username, 'Password': req.body.password});
-
-          res.redirect('/');
+          bcrypt.genSalt(saltRounds, function(err, salt) {
+            if (err) return next(err);
+            // hash the password along with our new salt
+            bcrypt.hash(req.body.password, salt, function(err, hash) {
+                if (err) return next(err);
+                // override the cleartext password with the hashed one
+                var password = hash;
+                collection.insertOne({'Username': req.body.username, 'Password': password});
+            });
+            res.redirect('/');
+          });s
         }
-      })
+      });
     });
   } else {
     res.redirect('/registration');
     //tell user that he typed his password wrong
   }
-
-
 });
 
 
