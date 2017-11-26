@@ -22,11 +22,11 @@ block content
           th Action
         if data.length
          each item in data
-          tr
-            td #{item['country']}
-            td #{item['number']}
+          tr(id='#{item["_id"]}')
+            td#countryCell #{item['country']}
+            td#numberCell #{item['number']}
             td
-               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}') Edit
+               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}', id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
                a(href='/deleteNumber?id=#{item["_id"]}', onclick='return confirm("You are going to delete this number. Continue?")') Delete
 
@@ -36,31 +36,28 @@ block content
       $(function() { 
 
         $('.editlink').on('click', function(){
-
           var id = $(this).data('id');
+          var country = $('#' + id).find("td[id='countryCell']");
+          country.attr('contentEditable', 'true');
+          country.attr('style', 'border: 2px solid #000;');
+          var number = $('#' + id).find("td[id='numberCell']");
+          number.attr('contentEditable', 'true');
+          number.attr('style', 'border: 2px solid #000;');
+          $('#edit' + id).text('Confirm');
+          $('#edit' + id).click(function() {
+          
+            $.ajax({
 
-          $.ajax({
+                method: "POST",
 
-            method: "GET",
+                url: "/editNumber",
 
-            url: "/fetchdataNumber",
-
-            data: { id:  id },
-
-          }).done(function( data ) {
-
-            $('#id').val(data[0]['_id']);
-
-            $('#country').val(data[0]['country']);
-            
-            $('#number').val(data[0]['number']);
-
-            $("#subbtn").val('Edit Number');
-
-            $('#form1').attr('action', '/editNumber');
-
+                data: { id:  id, country: country.text(), number: number.text() },
+                
+                success: function(response) {
+                            window.location = '/numbers';
+                        }
+            });
           });
-
         });
-
       });

@@ -13,6 +13,8 @@ const saltRounds = 10;
 
 var dburl = "mongodb://tipdev:tipdev123567@ds123534.mlab.com:23534/tiplineapplication";
 
+const cryptoRandomString = require('crypto-random-string');
+
 router.get('/', function(req, res, next) {
     res.redirect('/login');
 });
@@ -115,29 +117,6 @@ router.get('/numbers', function(req, res, next) {
 
 });
 
-router.post('/addReport', function(req, res, next) {
-
-  MongoClient.connect(dburl, function(err, db) {
-
-    if(err) { throw err;  }
-
-    var collection = db.collection('reports');
-
-    var report = {  title: req.body.title,  location: req.body.location, time: req.body.time, date: req.body.date, flight_num: req.body.flight_num, status: req.body.status };
-
-    collection.insert(report, function(err, result) {
-
-    if(err) { throw err; }
-
-      db.close();
-
-      res.redirect('/reports');
-  });
-
-  });
-
-});
-
 router.post('/addUser', function(req, res, next) {
 
   MongoClient.connect(dburl, function(err, db) {
@@ -146,7 +125,7 @@ router.post('/addUser', function(req, res, next) {
 
     var collection = db.collection('users');
 
-    var user = {  FirstName: req.body.FirstName,  LastName: req.body.LastName, Email: req.body.Email, Number: req.body.Number };
+    var user = {  FirstName: req.body.FirstName,  LastName: req.body.LastName, Email: req.body.Email, Phone_Number: req.body.Phone_Number, Company: req.body.Company, Location: req.body.Location };
 
     collection.insert(user, function(err, result) {
 
@@ -168,8 +147,10 @@ router.post('/addKey', function(req, res, next) {
     if(err) { throw err;  }
 
     var collection = db.collection('registration_keys');
+    
+    var strVal = cryptoRandomString(10);
 
-    var key = {  key: req.body.key };
+    var key = {  key: strVal };
 
     collection.insert(key, function(err, result) {
 
@@ -207,28 +188,6 @@ router.post('/addNumber', function(req, res, next) {
 
 });
 
-router.get('/fetchdataReport', function(req, res, next) {
-
-   var id = req.query.id;
-
-   MongoClient.connect(dburl, function(err, db) {
-
-    if(err) {  throw err;  }
-
-    db.collection('reports').find({_id: new mongodb.ObjectID(id)}).toArray(function(err, docs){
-
-      if(err) throw err;
-
-      res.send(docs);
-
-      db.close();
-
-    });
-
-  });
-
-});
-
 router.get('/fetchdataUser', function(req, res, next) {
 
    var id = req.query.id;
@@ -238,28 +197,6 @@ router.get('/fetchdataUser', function(req, res, next) {
     if(err) {  throw err;  }
 
     db.collection('users').find({_id: new mongodb.ObjectID(id)}).toArray(function(err, docs){
-
-      if(err) throw err;
-
-      res.send(docs);
-
-      db.close();
-
-    });
-
-  });
-
-});
-
-router.get('/fetchdataKey', function(req, res, next) {
-
-   var id = req.query.id;
-
-   MongoClient.connect(dburl, function(err, db) {
-
-    if(err) {  throw err;  }
-
-    db.collection('registration_keys').find({_id: new mongodb.ObjectID(id)}).toArray(function(err, docs){
 
       if(err) throw err;
 
@@ -297,20 +234,15 @@ router.get('/fetchdataNumber', function(req, res, next) {
 
 router.post('/editReport', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; }
-    var collection   = db.collection('reports');
-    var title = req.body.title;
-    var location = req.body.location;
-    var time = req.body.time;
-    var date = req.body.date;
-    var flight_num = req.body.flight_num;
+    if(err) { throw err; } 
+    var collection   = db.collection('reports'); 
     var status = req.body.status;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
-    { $set: {'title': title, 'location': location, 'time': time, date: date, flight_num: flight_num, status: status } }, function(err, result) {
-      if(err) { throw err; }
-      db.close();
-      res.redirect('/reports');
-    });
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
+    { $set: {'status': status } }, function(err, result) { 
+      if(err) { throw err; } 
+      db.close(); 
+      res.redirect('/reports'); 
+    }); 
   });
 });
 
@@ -321,26 +253,14 @@ router.post('/editUser', function(req, res, next){
     var FirstName = req.body.FirstName;
     var LastName = req.body.LastName;
     var Email = req.body.Email;
-    var Number = req.body.Number;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
-    { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email, 'Number': Number } }, function(err, result) {
-      if(err) { throw err; }
+    var Phone_Number = req.body.Phone_Number;
+    var Company = req.body.Company;
+    var Location = req.body.Location;
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
+    { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email, 'Phone_Number': Phone_Number, 'Company': Company, 'Location': Location } }, function(err, result) { 
+      if(err) { throw err; } 
       db.close();
       res.redirect('/users');
-    });
-  });
-});
-
-router.post('/editKey', function(req, res, next){
-  MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; }
-    var collection   = db.collection('registration_keys');
-    var key = req.body.key;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
-    { $set: {'key': key} }, function(err, result) {
-      if(err) { throw err; }
-      db.close();
-      res.redirect('/keys');
     });
   });
 });
@@ -351,12 +271,12 @@ router.post('/editNumber', function(req, res, next){
     var collection   = db.collection('hotline_numbers');
     var country = req.body.country;
     var number = req.body.number;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
-    { $set: {'country': country, 'number': number } }, function(err, result) {
-      if(err) { throw err; }
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
+    { $set: {'country': country, 'number': number } }, function(err, result) { 
+      if(err) { throw err; } 
       db.close();
-      res.redirect('/numbers');
-    });
+      res.redirect('/numbers'); 
+    }); 
   });
 });
 

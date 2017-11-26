@@ -4,45 +4,37 @@ block content
     h2 Tip Line Reports
     .success
     .error
-    form(id='form1' action='/addReport' method= 'post')
-      input#id(type='hidden', name='id', value='')
-      table
-        tr
-          td(style='text-align: center')
-            input#title(type='text', name='title', placeholder='Title', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#location(type='text', name='location', placeholder='Location', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#time(type='text', name='time', placeholder='Time', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#date(type='text', name='date', placeholder='Date', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#flight_num(type='text', name='flight_num', placeholder='Flight #', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#status(type='text', name='status', placeholder='Status', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#subbtn.btn(type='submit', name='sub', value='Add Report')
     table.table
       tbody
         tr
           th Title
           th Location
-          th Time
-          th Date
+          th Date & Time
           th Flight #
           th Status
+          th Description
+          th Media
           th Action
         if data.length
          each item in data
-          tr
+          tr(id='#{item["_id"]}')
             td #{item['title']}
-            td #{item['location']}
-            td #{item['time']}
-            td #{item['date']}
-            td #{item['flight_num']}
-            td #{item['status']}
             td
-               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}') Edit
+                ul.unstyled
+                    if item['location']
+                        li Latitude: #{item['location']['latitude']}
+                        li Longitude: #{item['location']['longitude']}
+            td #{item['date_time']}
+            td #{item['flight_num']}
+            td#statusCell #{item['status']}
+            td #{item['description']}
+            td
+                if item['URLs']
+                    each link in item['URLs'].length ? item['URLs'] : ['None']
+                        a(href="#{link}", target='_blank') #{link}
+                        br
+            td
+               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}',  id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
                a(href='/deleteReport?id=#{item["_id"]}', onclick='return confirm("You are going to delete this report. Continue?")') Delete
 
@@ -54,37 +46,27 @@ block content
         $('.editlink').on('click', function(){
 
           var id = $(this).data('id');
+          var status = $('#' + id).find("td[id='statusCell']");
+          status.attr('contentEditable', 'true');
+          status.attr('style', 'border: 2px solid #000;');
 
-          $.ajax({
+          $('#edit' + id).text('Confirm');
+          $('#edit' + id).click(function() {
+          
+            $.ajax({
 
-            method: "GET",
+                method: "POST",
 
-            url: "/fetchdataReport",
+                url: "/editReport",
 
-            data: { id:  id },
+                data: { id:  id, status: status.text() },
 
-          }).done(function( data ) {
-
-            $('#id').val(data[0]['_id']);
-
-            $('#title').val(data[0]['title']);
-
-            $('#location').val(data[0]['location']);
-
-            $('#time').val(data[0]['time']);
-            
-            $('#date').val(data[0]['date']);
-            
-            $('#flight_num').val(data[0]['flight_num']);
-            
-            $('#status').val(data[0]['status']);
-
-            $("#subbtn").val('Edit Report');
-
-            $('#form1').attr('action', '/editReport');
+                success: function(response) {
+                            window.location = '/reports';
+                        }
+            });
 
           });
 
         });
-
       });
