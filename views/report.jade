@@ -12,8 +12,6 @@ block content
           th Date & Time
           th Flight #
           th Status
-          th Description
-          th Media
           th Action
         - var count = 0
         if data.length
@@ -29,30 +27,29 @@ block content
             td #{item['flight_num']}
             td#statusCell #{item['status']}
             //- td #{item['description']}
-            td
-                if item['URLs']
-                    each link in item['URLs'].length ? item['URLs'] : ['None']
-                        a(href="#{link}", target='_blank') #{link}
-                        br
+            //- td
+            //-     if item['URLs']
+            //-         each link in item['URLs'].length ? item['URLs'] : ['None']
+            //-             a(href="#{link}", target='_blank') #{link}
+            //-             br
             td
                a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}',  id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
                a(href='/deleteReport?id=#{item["_id"]}', onclick='return confirm("You are going to delete this report. Continue?")') Delete
-          div(id='myModal' + count class='modal fade' role='dialog')
+          div(id='myModal' + count, class='modal fade', role='dialog')
               div(class='modal-dialog modal-xl' role='document')
                 div(class='modal-content')
                   div(class='modal-header')
                     button(type='button' class='close' data-dismiss='modal') &times;
                     h4(class='modal-title') #{data[count]['title']}
-                    if #{data[count]['URLs']}
-                      each link in #{data[count]['URLs']}.length ? #{data[count]['URLs'] : ['None']
-                          a(href="#{link}", target='_blank') #{link}
-                          br
                   div(class='modal-body')
                     p.
                       #{data[count]['description']}
-          - var link = #{data[count]}
-
+                  - var links = data[count].URLs
+                  if links
+                    each link, i in links
+                      a(href=link, target='_blank') #{link}
+                      br
                   div(class='modal-footer')
                     button(type='button' class='btn btn-default' data-dismiss='modal') Close
           - count = count + 1
