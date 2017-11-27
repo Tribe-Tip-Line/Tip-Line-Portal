@@ -18,7 +18,7 @@ block content
       tbody
         tr
           th Country
-          th Key
+          th Number
           th Action
         if data.length
          each item in data
@@ -33,7 +33,7 @@ block content
     script(src='https://code.jquery.com/jquery-3.1.1.min.js')
     script.
 
-      $(function() { 
+      $(function() {
 
         $('.editlink').on('click', function(){
           var id = $(this).data('id');
@@ -45,7 +45,7 @@ block content
           number.attr('style', 'border: 2px solid #000;');
           $('#edit' + id).text('Confirm');
           $('#edit' + id).click(function() {
-          
+
             $.ajax({
 
                 method: "POST",
@@ -53,7 +53,7 @@ block content
                 url: "/editNumber",
 
                 data: { id:  id, country: country.text(), number: number.text() },
-                
+
                 success: function(response) {
                             window.location = '/numbers';
                         }

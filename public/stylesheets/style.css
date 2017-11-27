@@ -1,8 +1,32 @@
 body {
   padding: 50px;
+  padding-top: 3.5rem;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background-color: lightblue;
+}
+
+.modal-header {
+  display: unset;
+}
+
+.nav-item {
+  font-size: 16px;
+}
+
+.navbar-brand {
+  font-size: 20px;
+}
+
+@media (min-width: 768px) {
+  .modal-xl {
+    width: 90%;
+   max-width:1800px;
+  }
 }

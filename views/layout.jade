@@ -5,31 +5,28 @@ html
     title=title
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
-    link(rel="stylesheet", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
-    script(src='/bootstrap/js/bootstrap.min.js')
     script(src="https://use.fontawesome.com/0177156d6f.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous")
   body
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+      a.navbar-brand(href="/") Airline Ambassadors
+      div.collapse.navbar-collapse#navbarsExampleDefault
+        ul.navbar-nav.mr-auto
+          li.nav-item
+            a.nav-link(href="/reports") Reports 
+              span.sr-only current 
+          li.nav-item
+            a.nav-link(href="/users") Users 
+              span.sr-only (current) 
+          li.nav-item 
+            a.nav-link(href="/keys") Registration Keys 
+              span.sr-only (current) 
+          li.nav-item
+            a.nav-link(href="/numbers") Hotline Numbers 
+              span.sr-only (current)
     div(class='container-fluid')
-      div(class='row')
-        div(class='col-sm-2')
-          block sidebar
-            ul(class='sidebar-nav')
-              dd 
-                a(href='/reports') Reports
-              dd
-                a(href='/users') Users
-              dd
-                a(href='/keys') Registration Keys
-              dd
-                a(href='/numbers') Hotline Numbers
-              li
-                a(href='/registration') Registration
-
-        div(class='col-sm-10')
-          block content
+    block content
