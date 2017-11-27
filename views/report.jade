@@ -36,22 +36,32 @@ block content
                a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}',  id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
                a(href='/deleteReport?id=#{item["_id"]}', onclick='return confirm("You are going to delete this report. Continue?")') Delete
-          div(id='myModal' + count, class='modal fade', role='dialog')
+          div(id='myModal' + count, class='modal fade', tabindex="-1", role='dialog', aria-labelledby="exampleModalLabel", aria-hidden="true")
               div(class='modal-dialog modal-xl' role='document')
                 div(class='modal-content')
                   div(class='modal-header')
                     button(type='button' class='close' data-dismiss='modal') &times;
-                    h4(class='modal-title') #{data[count]['title']}
+                    h3(class='modal-title') #{data[count]['title']}
                   div(class='modal-body')
-                    b #{data[count]['date_time']}
                     p
-                    p.
-                      #{data[count]['description']}
-                  - var links = data[count].URLs
-                  if links
-                    each link, i in links
-                      a(href=link, target='_blank') #{link}
-                      br
+                      b Date: </b> #{data[count]['date_time']}
+                    p
+                      b Flight #: </b> #{data[count]['flight_num']}
+                    p
+                      b Location: </b>
+                      div Latitude: #{data[count]['location']['latitude']}
+                      div Longitude: #{data[count]['location']['longitude']}
+                    p
+                      b Description:</b> #{data[count]['description']}
+                    p
+                      b Multimedia:
+                    p
+                    - var links = data[count].URLs
+                    if links
+                      each link, i in links
+                          a(href=link, target='_blank')
+                            img(src=link style='width:80px;height:80px;')
+                        br
                   div(class='modal-footer')
                     button(type='button' class='btn btn-default' data-dismiss='modal') Close
           - count = count + 1
@@ -59,10 +69,6 @@ block content
     script(src='https://code.jquery.com/jquery-3.1.1.min.js')
     script.
       $(function() {
-
-        $(document).on('show.bs.modal','#myModal1', function () {
-          alert('hi');
-        })
 
         $('.editlink').on('click', function(){
 
