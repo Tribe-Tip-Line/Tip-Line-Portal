@@ -8,7 +8,7 @@ var mongodb = require('mongodb');
 
 var MongoClient = mongodb.MongoClient;
 
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 var dburl = "mongodb://tipdev:tipdev123567@ds123534.mlab.com:23534/tiplineapplication";
