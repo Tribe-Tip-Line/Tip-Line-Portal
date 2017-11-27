@@ -43,6 +43,8 @@ block content
                     button(type='button' class='close' data-dismiss='modal') &times;
                     h4(class='modal-title') #{data[count]['title']}
                   div(class='modal-body')
+                    b #{data[count]['date_time']}
+                    p
                     p.
                       #{data[count]['description']}
                   - var links = data[count].URLs
