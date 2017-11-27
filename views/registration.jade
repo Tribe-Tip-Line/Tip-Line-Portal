@@ -7,7 +7,7 @@ block content
         form.form-signin(action="/registerAdmin", method="post")
           h2.form-signin-heading Registration
           p(style='color:red;')= error
-          input.input-block-level(type="text", name="username", placeholder="Username")
-          input.input-block-level(type="password", name="password", placeholder="Password")
-          input.input-block-level(type="password", name="passwordConfirm", placeholder="Confirm Password")
+          input.form-control(type="text", name="username", placeholder="Username")
+          input.form-control(type="password", name="password", placeholder="Password")
+          input.form-control(type="password", name="passwordConfirm", placeholder="Confirm Password")
           button.btn.btn-large.btn-primary(type="submit") Register

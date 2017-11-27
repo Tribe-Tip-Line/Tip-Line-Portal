@@ -17,8 +17,11 @@ head
     block content
       .container
         form.form-signin(action="/attemptLogin", method="post")
-          h2.form-signin-heading Login
+          h1.form-signin-heading Welcome to Airline Ambassadors Tip Line!
+            img(src="img/aa-wings.png")
+          h2.form-signin-heading Please Sign in
+          
           p(style='color:red;')= error
-          input.input-block-level(type="text", name="username", placeholder="Username")
-          input.input-block-level(type="password", name="password", placeholder="Password")
+          input.form-control(type="text", name="username", placeholder="Username")
+          input.form-control(type="password", name="password", placeholder="Password")
           button.btn.btn-large.btn-primary(type="submit") Sign in

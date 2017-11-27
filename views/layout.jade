@@ -13,7 +13,7 @@ html
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous")
   body
     nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
-      a.navbar-brand(href="/") Airline Ambassadors
+      a.navbar-brand(href="/reports") Airline Ambassadors
       div.collapse.navbar-collapse#navbarsExampleDefault
         ul.navbar-nav.mr-auto
           li.nav-item
@@ -27,6 +27,9 @@ html
               span.sr-only (current) 
           li.nav-item
             a.nav-link(href="/numbers") Hotline Numbers 
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href="/registration") Registration 
               span.sr-only (current)
     div(class='container-fluid')
     block content
