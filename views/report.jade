@@ -12,12 +12,11 @@ block content
           th Date & Time
           th Flight #
           th Status
-          th Description
-          th Media
           th Action
+        - var count = 0
         if data.length
          each item in data
-          tr(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal')
+          tr(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count)
             td #{item['title']}
             td
                 ul.unstyled
@@ -27,32 +26,43 @@ block content
             td #{item['date_time']}
             td #{item['flight_num']}
             td#statusCell #{item['status']}
-            td #{item['description']}
-            td
-                if item['URLs']
-                    each link in item['URLs'].length ? item['URLs'] : ['None']
-                        a(href="#{link}", target='_blank') #{link}
-                        br
+            //- td #{item['description']}
+            //- td
+            //-     if item['URLs']
+            //-         each link in item['URLs'].length ? item['URLs'] : ['None']
+            //-             a(href="#{link}", target='_blank') #{link}
+            //-             br
             td
                a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}',  id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
                a(href='/deleteReport?id=#{item["_id"]}', onclick='return confirm("You are going to delete this report. Continue?")') Delete
-            div(id='myModal' class='modal fade' role='dialog')
-                div(class='modal-dialog modal-xl' role='document')
-                  div(class='modal-content')
-                    div(class='modal-header')
-                      button(type='button' class='close' data-dismiss='modal')&times;
-                      h4(class='modal-title') Modal Header
-                    div(class='modal-body')
-                      p.
-                        Some text in the modal.
-                    div(class='modal-footer')
-                      button(type='button' class='btn btn-default' data-dismiss='modal') Close
+          div(id='myModal' + count, class='modal fade', role='dialog')
+              div(class='modal-dialog modal-xl' role='document')
+                div(class='modal-content')
+                  div(class='modal-header')
+                    button(type='button' class='close' data-dismiss='modal') &times;
+                    h4(class='modal-title') #{data[count]['title']}
+                  div(class='modal-body')
+                    b #{data[count]['date_time']}
+                    p
+                    p.
+                      #{data[count]['description']}
+                  - var links = data[count].URLs
+                  if links
+                    each link, i in links
+                      a(href=link, target='_blank') #{link}
+                      br
+                  div(class='modal-footer')
+                    button(type='button' class='btn btn-default' data-dismiss='modal') Close
+          - count = count + 1
 
     script(src='https://code.jquery.com/jquery-3.1.1.min.js')
     script.
-
       $(function() {
+
+        $(document).on('show.bs.modal','#myModal1', function () {
+          alert('hi');
+        })
 
         $('.editlink').on('click', function(){
 
