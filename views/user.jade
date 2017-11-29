@@ -25,6 +25,7 @@ block content
     table.table
       tbody
         tr
+          th ID
           th First Name
           th Last Name
           th Email
@@ -35,6 +36,7 @@ block content
         if data.length
          each item in data
           tr(id='#{item["_id"]}')
+            td#ID #{item["_id"]}
             td#firstnameCell #{item['FirstName']}
             td#lastnameCell #{item['LastName']}
             td#emailCell #{item['Email']}
