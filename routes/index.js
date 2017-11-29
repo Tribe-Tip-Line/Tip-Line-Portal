@@ -20,11 +20,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-  res.render('login.jade');
+  res.render('login.jade', {title: 'Tip Line: Login'});
 });
 
 router.get('/registration', function(req, res, next) {
-  res.render('registration.jade');
+  res.render('registration.jade', {title: 'Tip Line: Registration'});
 });
 
 router.get('/reports', function(req, res, next) {
@@ -363,11 +363,11 @@ router.post('/attemptLogin', function (req, res) {
           if (result == true) {
             res.redirect('/reports');
           } else {
-            res.render('login.jade', {error: 'Password is incorrect'});
+            res.render('login.jade', {title: 'Tip Line: Login', error: 'Password is incorrect'});
           }
         });
       } else {
-        res.render('login.jade', {error: 'Invalid Username'});
+        res.render('login.jade', {title: 'Tip Line: Login', error: 'Invalid Username'});
       }
     });
   });
@@ -381,7 +381,7 @@ router.post('/registerAdmin', function (req, res) {
       var adminInfo = collection.find({'Username': req.body.username});
       var adminExists = adminInfo.count().then(function(numItems) {
         if (numItems >= 1) {
-          res.render('registration.jade', {error: 'Username already exists'});
+          res.render('registration.jade', {title: 'Tip Line: Registration', error: 'Username already exists'});
         } else {
           bcrypt.genSalt(saltRounds, function(err, salt) {
             if (err) return next(err);
@@ -398,7 +398,7 @@ router.post('/registerAdmin', function (req, res) {
       });
     });
   } else {
-    res.render('registration.jade', {error: "Passwords don't match up"});
+    res.render('registration.jade', {title: 'Tip Line: Registration', error: "Passwords don't match up"});
   }
 });
 
