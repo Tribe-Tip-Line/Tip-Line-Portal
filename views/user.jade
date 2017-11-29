@@ -4,48 +4,16 @@ block content
     h2 Users
     .success
     .error
-    form(id='form1' action='/addUser' method= 'post')
-      input#id(type='hidden', name='id', value='')
-      table
-        tr
-          td(style='text-align: center')
-            input#FirstName(type='text', name='FirstName', placeholder='First Name', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#LastName(type='text', name='LastName', placeholder='Last Name', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Email(type='text', name='Email', placeholder='Email', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Phone_Number(type='text', name='Phone_Number', placeholder='Phone Number', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Company(type='text', name='Company', placeholder='Company', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Location(type='text', name='Location', placeholder='Location', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#subbtn.btn(type='submit', name='sub', value='Add User')
     table.table
       tbody
         tr
           th ID
-          th First Name
-          th Last Name
-          th Email
-          th Phone Number
-          th Company
-          th Location
           th Action
         if data.length
          each item in data
           tr(id='#{item["_id"]}')
             td#ID #{item["_id"]}
-            td#firstnameCell #{item['FirstName']}
-            td#lastnameCell #{item['LastName']}
-            td#emailCell #{item['Email']}
-            td#phonenumberCell #{item['Phone_Number']}
-            td#companyCell #{item['Company']}
-            td#locationCell #{item['Location']}
             td
-               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}', id='edit' + '#{item["_id"]}') Edit
-               | &nbsp;&nbsp;
                a(href='/deleteUser?id=#{item["_id"]}', onclick='return confirm("You are going to delete this user. Continue?")') Delete
 
     script(src='https://code.jquery.com/jquery-3.1.1.min.js')
@@ -56,25 +24,6 @@ block content
         $('.editlink').on('click', function(){
 
           var id = $(this).data('id');
-          var FirstName = $('#' + id).find("td[id='firstnameCell']");
-          FirstName.attr('contentEditable', 'true');
-          FirstName.attr('style', 'border: 2px solid #000;');
-          var LastName = $('#' + id).find("td[id='lastnameCell']");
-          LastName.attr('contentEditable', 'true');
-          LastName.attr('style', 'border: 2px solid #000;');
-          var Email = $('#' + id).find("td[id='emailCell']");
-          Email.attr('contentEditable', 'true');
-          Email.attr('style', 'border: 2px solid #000;');
-          var Phone_Number = $('#' + id).find("td[id='phonenumberCell']");
-          Phone_Number.attr('contentEditable', 'true');
-          Phone_Number.attr('style', 'border: 2px solid #000;');
-          var Company = $('#' + id).find("td[id='companyCell']");
-          Company.attr('contentEditable', 'true');
-          Company.attr('style', 'border: 2px solid #000;');
-          var Location = $('#' + id).find("td[id='locationCell']");
-          Location.attr('contentEditable', 'true');
-          Location.attr('style', 'border: 2px solid #000;');
-          $('#edit' + id).text('Confirm');
           $('#edit' + id).click(function() {
           
             $.ajax({
@@ -83,7 +32,7 @@ block content
 
                 url: "/editUser",
 
-                data: { id:  id, FirstName: FirstName.text(), LastName: LastName.text(), Email: Email.text(), Phone_Number: Phone_Number.text(), Company: Company.text(), Location: Location.text() },
+                data: { id:  id },
                 
                 success: function(response) {
                             window.location = '/users';
