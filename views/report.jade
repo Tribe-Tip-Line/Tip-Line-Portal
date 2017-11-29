@@ -47,21 +47,29 @@ block content
                       b Date: </b> #{data[count]['date_time']}
                     p
                       b Flight #: </b> #{data[count]['flight_num']}
-                    p
-                      b Location: </b>
-                      div Latitude: #{data[count]['location']['latitude']}
-                      div Longitude: #{data[count]['location']['longitude']}
+                    if data[count]['location']
+                        p
+                          b Location: </b>
+                          div Latitude: #{data[count]['location']['latitude']}
+                          div Longitude: #{data[count]['location']['longitude']}
                     p
                       b Description:</b> #{data[count]['description']}
+                    p
+                     b Status:</b> #{data[count]['status']}
                     p
                       b Multimedia:
                     p
                     - var links = data[count].URLs
                     if links
                       each link, i in links
+                        if link.includes("video")
+                          a(href=link, target='_blank')
+                            button(type='button' class='btn btn-default') Video Link
+                            | &nbsp;&nbsp;
+                        else
                           a(href=link, target='_blank')
                             img(src=link style='width:80px;height:80px;')
-                        br
+                            | &nbsp;&nbsp;
                   div(class='modal-footer')
                     button(type='button' class='btn btn-default' data-dismiss='modal') Close
           - count = count + 1
