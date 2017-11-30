@@ -12,7 +12,6 @@ block content
           th Date & Time
           th Flight #
           th Status
-          th Sender ID
           th Action
         - var count = 0
         if data.length
@@ -27,7 +26,6 @@ block content
             td #{item['date_time']}
             td #{item['flight_num']}
             td#statusCell #{item['status']}
-            td #{item['user_id']}
             //- td #{item['description']}
             //- td
             //-     if item['URLs']
@@ -38,6 +36,8 @@ block content
                a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}',  id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
                a(href='/deleteReport?id=#{item["_id"]}', onclick='return confirm("You are going to delete this report. Continue?")') Delete
+               | &nbsp;&nbsp;
+               a(href='/banUser?user_id=#{item["user_id"]}', onclick='return confirm("You are going to delete the user that sent this report. Continue?")') Ban
           div(id='myModal' + count, class='modal fade', tabindex="-1", role='dialog', aria-labelledby="exampleModalLabel", aria-hidden="true")
               div(class='modal-dialog modal-xl' role='document')
                 div(class='modal-content')
@@ -72,8 +72,6 @@ block content
                           a(href=link, target='_blank')
                             img(src=link style='width:80px;height:80px;')
                             | &nbsp;&nbsp;
-                    p
-                      b Sender ID:</b> #{data[count]['user_id']}
                   div(class='modal-footer')
                     button(type='button' class='btn btn-default' data-dismiss='modal') Close
           - count = count + 1

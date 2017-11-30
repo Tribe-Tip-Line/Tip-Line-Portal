@@ -296,6 +296,22 @@ router.get('/deleteReport', function(req, res, next) {
   });
 });
 
+router.get('/banUser', function(req, res, next) {
+  var id = req.query.user_id;
+  MongoClient.connect(dburl, function(err, db) {
+    if(err) { throw err;  }
+    db.collection('users', function(err, users) {
+      users.deleteOne({_id: new mongodb.ObjectID(id)});
+      if (err){
+       throw err;
+      }else{
+         db.close();
+          res.redirect('/reports');
+      }
+    });
+  });
+});
+
 router.get('/deleteUser', function(req, res, next) {
   var id = req.query.id;
   MongoClient.connect(dburl, function(err, db) {
