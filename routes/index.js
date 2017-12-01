@@ -300,15 +300,13 @@ router.get('/banUser', function(req, res, next) {
   var id = req.query.user_id;
   MongoClient.connect(dburl, function(err, db) {
     if(err) { throw err;  }
-    db.collection('users', function(err, users) {
-      users.deleteOne({_id: new mongodb.ObjectID(id)});
-      if (err){
-       throw err;
-      }else{
-         db.close();
-          res.redirect('/reports');
-      }
-    });
+    var collection   = db.collection('users');
+    collection.update({'_id':new mongodb.ObjectID(id)}, 
+    { $set: {'Ban_Status': 'true' } }, function(err, result) { 
+      if(err) { throw err; } 
+      db.close();
+      res.redirect('/reports'); 
+    }); 
   });
 });
 
