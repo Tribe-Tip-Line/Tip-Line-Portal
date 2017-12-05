@@ -26,15 +26,23 @@ npm run devstart
 
 *some npm installs may be required
 
-**Run instructions:** visit (http://localhost:3000/) to access the website on your local server; if pushing to master, changes in code will also be available at (https://tipline.herokuapp.com/), where we publicly host the website
-
-#### Login: TipLineApp
-#### Password: Tipline17
-
-You can create a new web portal account by clicking the "Registration" tab on the portal
+**Run instructions:** visit (http://localhost:3000/) to access the website on your local server; if pushing to master, changes in code will also be available at (https://tipline.herokuapp.com/), where the website is publicly hosted
 
 **Troubleshooting:** some npm installs may be needed to develop on the site; use
 
 ```
 npm install [module name] --save
 ```
+**Node.js modules used:**
+
+nodemon  
+bcryptjs  
+body-parser  
+cookie-parser  
+crypto-random-string  
+debug  
+express  
+jade  
+mongodb  
+morgan  
+serve-favicon
