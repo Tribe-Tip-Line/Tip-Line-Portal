@@ -2,7 +2,7 @@
 
 [Airline Ambassadors International](http://airlineamb.org/)
 
-### Release Notes (v1.0.0 // 12/4/2017)
+### Release Notes (v1.0.0 // 12-4-2017)
 
 **Features:** interactive data tables with access to Tip Line information, such as reports, users, registration keys, and hotline numbers. Added browser tab icon. A Node.js [express](https://expressjs.com/) web application.
 
