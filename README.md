@@ -1,6 +1,6 @@
 # Tip Line Web Portal
 
-Airline Ambassadors International
+[Airline Ambassadors International](http://airlineamb.org/)
 
 ### Release Notes
 
@@ -28,7 +28,13 @@ npm run devstart
 
 **Run instructions:** visit (http://localhost:3000/) to access the website on your local server; if pushing to master, changes in code will also be available at (https://tipline.herokuapp.com/), where we publicly host the website
 
-### Login: TipLineApp
-### Password: Tipline17
+#### Login: TipLineApp
+#### Password: Tipline17
 
 You can create a new web portal account by clicking the "Registration" tab on the portal
+
+**Troubleshooting:** some npm installs may be needed to develop on the site; use
+
+```
+npm install [module name] --save
+```
