@@ -2,13 +2,13 @@
 
 [Airline Ambassadors International](http://airlineamb.org/)
 
-### Release Notes
+### Release Notes (v1.0.0 // 12/4/2017)
 
 **Features:** interactive data tables with access to Tip Line information, such as reports, users, registration keys, and hotline numbers. Added browser tab icon. A Node.js [express](https://expressjs.com/) web application.
 
 **Fixed:** ban functionality, which will add users by ID to ban collection in the database.
 
-**Bugs/Defects:** cannot edit or delete reports properly because of modal bug. Proper login required. Need to include Airline Ambassadors logo on site, and display geograghic location instead of latitude and longitude coordinates.
+**Bugs/Defects:** cannot edit or delete reports properly because of modal bug. Proper login required. Need to include Airline Ambassadors logo on site, and display geographic location instead of latitude and longitude coordinates.
 
 ### Install Guide
 
