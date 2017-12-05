@@ -4,7 +4,7 @@
 
 ### Release Notes
 
-**Features:** interactive data tables with access to Tip Line information, such as reports, users, registration keys, and hotline numbers. Added browser tab icon.
+**Features:** interactive data tables with access to Tip Line information, such as reports, users, registration keys, and hotline numbers. Added browser tab icon. A Node.js [express](https://expressjs.com/) web application.
 
 **Fixed:** ban functionality, which will add users by ID to ban collection in the database.
 
