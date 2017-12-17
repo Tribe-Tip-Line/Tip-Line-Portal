@@ -17,8 +17,6 @@ var dburl = "mongodb://tipdev:tipdev123567@ds123534.mlab.com:23534/tiplineapplic
 
 const cryptoRandomString = require('crypto-random-string');
 
-var authenticated = false;
-
 router.get('/', function(req, res, next) {
   res.redirect('/login');
 });
@@ -32,7 +30,9 @@ router.get('/registration', function(req, res, next) {
 });
 
 function checkAuthentication(req, res, next) {
-  if (req.session.authenticated) {
+  console.log(req.session.authenticated);
+  // console.log(req.session.authenticated);
+  if (!req.session.authenticated) {
     res.redirect('/login');
   }
 }
@@ -409,6 +409,10 @@ router.get('/deleteNumber', function(req, res, next) {
 //
 //Login and Registration JS things
 //
+router.get('/logout', function (req, res, next) {
+  req.session.destroy();
+  res.redirect('/login');
+});
 
 router.post('/attemptLogin', function (req, res) {
   MongoClient.connect(dburl, function(err, db) {
@@ -419,11 +423,13 @@ router.post('/attemptLogin', function (req, res) {
     adminInfo.then(function(information) {
       if (information != null) {
         var hashedPass = information.Password;
-        console.log(hashedPass);
         bcrypt.compare(req.body.password, hashedPass, function(err, result) {
-          console.log(result);
           if (result == true) {
             req.session.authenticated = true;
+            req.session.save(function(){
+              req.session.authenticated = true;
+            });
+            console.log(req.session.authenticated);
             res.redirect('/reports');
           } else {
             res.render('login.jade', {title: 'Tip Line: Login', error: 'Password is incorrect'});
