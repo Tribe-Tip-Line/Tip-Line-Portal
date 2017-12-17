@@ -117,6 +117,28 @@ router.get('/numbers', function(req, res, next) {
 
 });
 
+router.get('/banned', function(req, res, next) {
+
+  MongoClient.connect(dburl, function(err, db) {
+
+    if(err) {  console.log(err); throw err;  }
+
+    data = '';
+
+    db.collection('users').find().toArray(function(err, docs){
+
+      if(err) throw err;
+
+      res.render('ban.jade', {title: 'Tip Line: Banned Users', data: docs});
+
+      db.close();
+
+    });
+
+  });
+
+});
+
 router.post('/addUser', function(req, res, next) {
 
   MongoClient.connect(dburl, function(err, db) {
@@ -280,6 +302,19 @@ router.post('/editNumber', function(req, res, next){
   });
 });
 
+router.post('/unBanUser', function(req, res, next){
+  MongoClient.connect(dburl, function(err, db) {
+    if(err) { throw err; }
+    var collection   = db.collection('users');
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
+    { $set: {'Ban_Status': false } }, function(err, result) { 
+      if(err) { throw err; } 
+      db.close();
+      res.redirect('/banned'); 
+    }); 
+  });
+});
+
 router.get('/deleteReport', function(req, res, next) {
   var id = req.query.id;
   MongoClient.connect(dburl, function(err, db) {
@@ -302,8 +337,8 @@ router.get('/banUser', function(req, res, next) {
     if(err) { throw err;  }
     var collection   = db.collection('users');
     collection.update({'_id':new mongodb.ObjectID(id)}, 
-    { $set: {'Ban_Status': 'true' } }, function(err, result) { 
-      if(err) { throw err; } 
+    { $set: {'Ban_Status': true } }, function(err, result) { 
+      if(err) { throw err; }
       db.close();
       res.redirect('/reports'); 
     }); 

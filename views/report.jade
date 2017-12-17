@@ -11,6 +11,7 @@ block content
           th Location
           th Date & Time
           th Flight #
+          th City
           th Status
           th Action
         - var count = 0
@@ -20,11 +21,15 @@ block content
             td #{item['title']}
             td
                 ul.unstyled
-                    if item['location']
-                        li Latitude: #{item['location']['latitude']}
-                        li Longitude: #{item['location']['longitude']}
+                    if item['coordinates']
+                        li Latitude: #{item['coordinates']['latitude']}
+                        li Longitude: #{item['coordinates']['longitude']}
             td #{item['date_time']}
             td #{item['flight_num']}
+            if item['city']
+                td #{item['city']}, #{item['country']}
+            else
+                td
             td#statusCell #{item['status']}
             //- td #{item['description']}
             //- td
@@ -49,13 +54,16 @@ block content
                       b Date: </b> #{data[count]['date_time']}
                     p
                       b Flight #: </b> #{data[count]['flight_num']}
-                    if data[count]['location']
+                    if data[count]['coordinates']
                         p
                           b Location: </b>
-                          div Latitude: #{data[count]['location']['latitude']}
-                          div Longitude: #{data[count]['location']['longitude']}
+                          div Latitude: #{data[count]['coordinates']['latitude']}
+                          div Longitude: #{data[count]['coordinates']['longitude']}
                     p
                       b Description:</b> #{data[count]['description']}
+                    if data[count]['city']
+                        p
+                         b City:</b> #{data[count]['city']}, #{data[count]['country']}
                     p
                      b Status:</b> #{data[count]['status']}
                     p
