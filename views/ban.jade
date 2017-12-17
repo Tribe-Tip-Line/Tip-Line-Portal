@@ -12,32 +12,7 @@ block content
         if data.length
          each item in data
             if item['Ban_Status']
-                      tr(id='#{item["_id"]}')
-                        td #{item['_id']}
-                        td
-                           a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}', id='edit' + '#{item["_id"]}') Unban
-
-    script(src='https://code.jquery.com/jquery-3.1.1.min.js')
-    script.
-
-      $(function() {
-
-        $('.editlink').on('click', function(){
-          var id = $(this).data('id');
-          $('#edit' + id).click(function() {
-
-            $.ajax({
-
-                method: "POST",
-
-                url: "/unBanUser",
-
-                data: { id:  id },
-
-                success: function(response) {
-                            window.location = '/banned';
-                        }
-            });
-          });
-        });
-      });
+              tr(id='#{item["_id"]}')
+                td #{item['_id']}
+                td
+                   a(href='/unbanUser?user_id=#{item["_id"]}', onclick='return confirm("You are going to unban this user. Continue?")') Unban

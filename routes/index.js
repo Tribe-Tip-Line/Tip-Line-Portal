@@ -302,13 +302,14 @@ router.post('/editNumber', function(req, res, next){
   });
 });
 
-router.post('/unBanUser', function(req, res, next){
+router.get('/unbanUser', function(req, res, next){
+  var id = req.query.user_id;
   MongoClient.connect(dburl, function(err, db) {
     if(err) { throw err; }
     var collection   = db.collection('users');
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
+    collection.update({'_id':new mongodb.ObjectID(id)}, 
     { $set: {'Ban_Status': false } }, function(err, result) { 
-      if(err) { throw err; } 
+      if(err) { throw err; }
       db.close();
       res.redirect('/banned'); 
     }); 
