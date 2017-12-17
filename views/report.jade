@@ -18,23 +18,23 @@ block content
         - var count = 0
         if data.length
          each item in data
-          tr(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count)
-            td #{item['title']}
-            td
+          tr(id='#{item["_id"]}' class='highlighted')
+            td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count) #{item['title']}
+            td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count)
                 ul.unstyled
                     if item['coordinates']
                         li Latitude: #{item['coordinates']['latitude']}
                         li Longitude: #{item['coordinates']['longitude']}
-            td #{item['date_time']}
-            td #{item['flight_num']}
+            td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count) #{item['date_time']}
+            td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count) #{item['flight_num']}
             if item['city']
-                td #{item['city']}, #{item['country']}
+                td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count) #{item['city']}, #{item['country']}
             else
-                td
+                td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count)
             if item['additional_email']
-                td #{item['additional_email']}
+                td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count) #{item['additional_email']}
             else
-                td
+                td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count)
             td#statusCell #{item['status']}
             //- td #{item['description']}
             //- td
