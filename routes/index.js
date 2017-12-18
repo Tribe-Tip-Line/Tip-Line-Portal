@@ -2,6 +2,8 @@
 
 var express = require('express');
 
+var session = require('express-session')
+
 var router = express.Router();
 
 var mongodb = require('mongodb');
@@ -16,7 +18,7 @@ var dburl = "mongodb://tipdev:tipdev123567@ds123534.mlab.com:23534/tiplineapplic
 const cryptoRandomString = require('crypto-random-string');
 
 router.get('/', function(req, res, next) {
-    res.redirect('/login');
+  res.redirect('/login');
 });
 
 router.get('/login', function(req, res, next) {
@@ -24,10 +26,19 @@ router.get('/login', function(req, res, next) {
 });
 
 router.get('/registration', function(req, res, next) {
+  checkAuthentication(req, res, next);
   res.render('registration.jade', {title: 'Tip Line: Registration'});
 });
 
+function checkAuthentication(req, res, next) {
+  if (!req.session.authenticated) {
+    res.redirect('/login');
+  }
+}
+
 router.get('/reports', function(req, res, next) {
+
+  checkAuthentication(req, res, next);
 
   MongoClient.connect(dburl, function(err, db) {
 
@@ -51,7 +62,7 @@ router.get('/reports', function(req, res, next) {
 
 
 router.get('/users', function(req, res, next) {
-
+  checkAuthentication(req, res, next);
   MongoClient.connect(dburl, function(err, db) {
 
     if(err) {  console.log(err); throw err;  }
@@ -73,7 +84,7 @@ router.get('/users', function(req, res, next) {
 });
 
 router.get('/keys', function(req, res, next) {
-
+  checkAuthentication(req, res, next);
   MongoClient.connect(dburl, function(err, db) {
 
     if(err) {  console.log(err); throw err;  }
@@ -96,7 +107,7 @@ router.get('/keys', function(req, res, next) {
 
 
 router.get('/numbers', function(req, res, next) {
-
+  checkAuthentication(req, res, next);
   MongoClient.connect(dburl, function(err, db) {
 
     if(err) {  console.log(err); throw err;  }
@@ -118,7 +129,7 @@ router.get('/numbers', function(req, res, next) {
 });
 
 router.get('/banned', function(req, res, next) {
-
+  checkAuthentication(req, res, next);
   MongoClient.connect(dburl, function(err, db) {
 
     if(err) {  console.log(err); throw err;  }
@@ -169,7 +180,7 @@ router.post('/addKey', function(req, res, next) {
     if(err) { throw err;  }
 
     var collection = db.collection('registration_keys');
-    
+
     var strVal = cryptoRandomString(10);
 
     var key = {  key: strVal };
@@ -256,15 +267,15 @@ router.get('/fetchdataNumber', function(req, res, next) {
 
 router.post('/editReport', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
-    if(err) { throw err; } 
-    var collection   = db.collection('reports'); 
+    if(err) { throw err; }
+    var collection   = db.collection('reports');
     var status = req.body.status;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
-    { $set: {'status': status } }, function(err, result) { 
-      if(err) { throw err; } 
-      db.close(); 
-      res.redirect('/reports'); 
-    }); 
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
+    { $set: {'status': status } }, function(err, result) {
+      if(err) { throw err; }
+      db.close();
+      res.redirect('/reports');
+    });
   });
 });
 
@@ -278,9 +289,9 @@ router.post('/editUser', function(req, res, next){
     var Phone_Number = req.body.Phone_Number;
     var Company = req.body.Company;
     var Location = req.body.Location;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
-    { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email, 'Phone_Number': Phone_Number, 'Company': Company, 'Location': Location } }, function(err, result) { 
-      if(err) { throw err; } 
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
+    { $set: {'FirstName': FirstName, 'LastName': LastName, 'Email': Email, 'Phone_Number': Phone_Number, 'Company': Company, 'Location': Location } }, function(err, result) {
+      if(err) { throw err; }
       db.close();
       res.redirect('/users');
     });
@@ -293,12 +304,12 @@ router.post('/editNumber', function(req, res, next){
     var collection   = db.collection('hotline_numbers');
     var country = req.body.country;
     var number = req.body.number;
-    collection.update({'_id':new mongodb.ObjectID(req.body.id)}, 
-    { $set: {'country': country, 'number': number } }, function(err, result) { 
-      if(err) { throw err; } 
+    collection.update({'_id':new mongodb.ObjectID(req.body.id)},
+    { $set: {'country': country, 'number': number } }, function(err, result) {
+      if(err) { throw err; }
       db.close();
-      res.redirect('/numbers'); 
-    }); 
+      res.redirect('/numbers');
+    });
   });
 });
 
@@ -307,12 +318,12 @@ router.get('/unbanUser', function(req, res, next){
   MongoClient.connect(dburl, function(err, db) {
     if(err) { throw err; }
     var collection   = db.collection('users');
-    collection.update({'_id':new mongodb.ObjectID(id)}, 
-    { $set: {'Ban_Status': false } }, function(err, result) { 
+    collection.update({'_id':new mongodb.ObjectID(id)},
+    { $set: {'Ban_Status': false } }, function(err, result) {
       if(err) { throw err; }
       db.close();
-      res.redirect('/banned'); 
-    }); 
+      res.redirect('/banned');
+    });
   });
 });
 
@@ -337,12 +348,12 @@ router.get('/banUser', function(req, res, next) {
   MongoClient.connect(dburl, function(err, db) {
     if(err) { throw err;  }
     var collection   = db.collection('users');
-    collection.update({'_id':new mongodb.ObjectID(id)}, 
-    { $set: {'Ban_Status': true } }, function(err, result) { 
+    collection.update({'_id':new mongodb.ObjectID(id)},
+    { $set: {'Ban_Status': true } }, function(err, result) {
       if(err) { throw err; }
       db.close();
-      res.redirect('/reports'); 
-    }); 
+      res.redirect('/reports');
+    });
   });
 });
 
@@ -397,6 +408,10 @@ router.get('/deleteNumber', function(req, res, next) {
 //
 //Login and Registration JS things
 //
+router.get('/logout', function (req, res, next) {
+  req.session.destroy();
+  res.redirect('/login');
+});
 
 router.post('/attemptLogin', function (req, res) {
   MongoClient.connect(dburl, function(err, db) {
@@ -407,10 +422,13 @@ router.post('/attemptLogin', function (req, res) {
     adminInfo.then(function(information) {
       if (information != null) {
         var hashedPass = information.Password;
-        console.log(hashedPass);
         bcrypt.compare(req.body.password, hashedPass, function(err, result) {
-          console.log(result);
           if (result == true) {
+            req.session.authenticated = true;
+            req.session.save(function(){
+              req.session.authenticated = true;
+            });
+            console.log(req.session.authenticated);
             res.redirect('/reports');
           } else {
             res.render('login.jade', {title: 'Tip Line: Login', error: 'Password is incorrect'});
@@ -451,7 +469,6 @@ router.post('/registerAdmin', function (req, res) {
     res.render('registration.jade', {title: 'Tip Line: Registration', error: "Passwords don't match up"});
   }
 });
-
 
 
 
