@@ -26,12 +26,11 @@ router.get('/login', function(req, res, next) {
 });
 
 router.get('/registration', function(req, res, next) {
+  checkAuthentication(req, res, next);
   res.render('registration.jade', {title: 'Tip Line: Registration'});
 });
 
 function checkAuthentication(req, res, next) {
-  console.log(req.session.authenticated);
-  // console.log(req.session.authenticated);
   if (!req.session.authenticated) {
     res.redirect('/login');
   }
@@ -63,7 +62,7 @@ router.get('/reports', function(req, res, next) {
 
 
 router.get('/users', function(req, res, next) {
-
+  checkAuthentication(req, res, next);
   MongoClient.connect(dburl, function(err, db) {
 
     if(err) {  console.log(err); throw err;  }
@@ -85,7 +84,7 @@ router.get('/users', function(req, res, next) {
 });
 
 router.get('/keys', function(req, res, next) {
-
+  checkAuthentication(req, res, next);
   MongoClient.connect(dburl, function(err, db) {
 
     if(err) {  console.log(err); throw err;  }
@@ -108,7 +107,7 @@ router.get('/keys', function(req, res, next) {
 
 
 router.get('/numbers', function(req, res, next) {
-
+  checkAuthentication(req, res, next);
   MongoClient.connect(dburl, function(err, db) {
 
     if(err) {  console.log(err); throw err;  }
@@ -130,7 +129,7 @@ router.get('/numbers', function(req, res, next) {
 });
 
 router.get('/banned', function(req, res, next) {
-
+  checkAuthentication(req, res, next);
   MongoClient.connect(dburl, function(err, db) {
 
     if(err) {  console.log(err); throw err;  }

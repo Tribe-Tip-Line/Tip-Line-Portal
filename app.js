@@ -25,8 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'ambassador_tipline',
   resave: false,
-  saveUninitialized: false,
-  cookie: { secure: true }}));
+  saveUninitialized: false}));
 
 app.use('/', index);
 app.use('/users', users);
