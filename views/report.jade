@@ -36,14 +36,8 @@ block content
             else
                 td(id='#{item["_id"]}' class='clickable' data-toggle='modal' data-target='#myModal' + count data-id=count)
             td#statusCell #{item['status']}
-            //- td #{item['description']}
-            //- td
-            //-     if item['URLs']
-            //-         each link in item['URLs'].length ? item['URLs'] : ['None']
-            //-             a(href="#{link}", target='_blank') #{link}
-            //-             br
-            td
-               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}',  id='edit' + '#{item["_id"]}') Edit
+            td(width="20%")
+               a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}',  id='edit' + '#{item["_id"]}') Change Status
                | &nbsp;&nbsp;
                a(href='/deleteReport?id=#{item["_id"]}', onclick='return confirm("You are going to delete this report. Continue?")') Delete
                | &nbsp;&nbsp;
@@ -90,6 +84,7 @@ block content
                             | &nbsp;&nbsp;
                   div(class='modal-footer')
                     button(type='button' class='btn btn-default' data-dismiss='modal') Close
+
           - count = count + 1
 
     script(src='https://code.jquery.com/jquery-3.1.1.min.js')
@@ -97,29 +92,27 @@ block content
       $(function() {
 
         $('.editlink').on('click', function(){
-
+          console.log("hello!");
           var id = $(this).data('id');
+          console.log(id);
           var status = $('#' + id).find("td[id='statusCell']");
-          status.attr('contentEditable', 'true');
-          status.attr('style', 'border: 2px solid #000;');
+          //- status.attr('contentEditable', 'true');
+          //- status.attr('style', 'border: 2px solid #000;');
+          if (status.text() === 'Complete') {
+            status.text('Responders Alerted');   
+          } else {
+            status.text('Complete');
+          }
+          $.ajax({
+            method: "POST",
 
-          $('#edit' + id).text('Confirm');
-          $('#edit' + id).click(function() {
+            url: "/editReport",
 
-            $.ajax({
+            data: { id:  id, status: status.text() },
 
-                method: "POST",
-
-                url: "/editReport",
-
-                data: { id:  id, status: status.text() },
-
-                success: function(response) {
-                            window.location = '/reports';
-                        }
-            });
-
+            success: function(response) {
+                        window.location = '/reports';
+            }
           });
-
         });
       });
