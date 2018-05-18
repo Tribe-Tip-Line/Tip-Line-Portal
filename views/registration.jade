@@ -6,8 +6,20 @@ block content
       .container
         form.form-signin(action="/registerAdmin", method="post")
           h2.form-signin-heading Registration
+            span(class='clickableIcon')
+              i(class="fas fa-info-circle", data-toggle="modal", data-target="#informationModal")
           p(style='color:red;')= error
           input.form-control(type="text", name="username", placeholder="Username")
           input.form-control(type="password", name="password", placeholder="Password")
           input.form-control(type="password", name="passwordConfirm", placeholder="Confirm Password")
           button.btn.btn-large.btn-primary(type="submit") Register
+        div(id="informationModal", class='modal fade', tabindex="-1", role='dialog', aria-labelledby="exampleModalLabel", aria-hidden="true")
+          div(class='modal-dialog modal-xl' role='document')
+            div(class='modal-content')
+              div(class='modal-header')
+                button(type='button' class='close' data-dismiss='modal') &times;
+                h3(class='modal-title') Report Page Information
+              div(class='modal-body')
+                p In this page you can create new Administrators to the TIP Line Web Portal. Tip Line Web Portal Administrators have access to all features of the TIP Line Web Portal. Once you create an Administrator for the TIP Line Web Portal, the only way to remove an admin is to go to the database and delete them yourself.
+              div(class='modal-footer')
+                button(type='button' class='btn btn-default' data-dismiss='modal') Close

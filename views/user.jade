@@ -2,26 +2,10 @@ extends layout
 block content
   .container
     h2 Users
+      span(class='clickableIcon')
+        i(class="fas fa-info-circle", data-toggle="modal", data-target="#informationModal")
     .success
     .error
-    form(id='form1' action='/addUser' method= 'post')
-      input#id(type='hidden', name='id', value='')
-      table
-        tr
-          td(style='text-align: center')
-            input#FirstName(type='text', name='FirstName', placeholder='First Name', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#LastName(type='text', name='LastName', placeholder='Last Name', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Email(type='text', name='Email', placeholder='Email', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Phone_Number(type='text', name='Phone_Number', placeholder='Phone Number', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Company(type='text', name='Company', placeholder='Company', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#Location(type='text', name='Location', placeholder='Location', value='')
-            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            input#subbtn.btn(type='submit', name='sub', value='Add User')
     table.table
       tbody
         tr
@@ -47,11 +31,23 @@ block content
                a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}', id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
                a(href='/deleteUser?id=#{item["_id"]}', onclick='return confirm("You are going to delete this user. Continue?")') Delete
-
+    div(id="informationModal", class='modal fade', tabindex="-1", role='dialog', aria-labelledby="exampleModalLabel", aria-hidden="true")
+      div(class='modal-dialog modal-xl' role='document')
+        div(class='modal-content')
+          div(class='modal-header')
+            button(type='button' class='close' data-dismiss='modal') &times;
+            h3(class='modal-title') Report Page Information
+          div(class='modal-body')
+            p The Users Page is where you can view a list of users/TIP reporters for the mobile application. The information below includes their unique user ID, First Name, Last Name, email, phone number, company and location.
+            p
+            h5 Action Column:
+            p In the action column you will have the ability to either edit a user, or delete a user. By deleting a user you can effectively stop the user from submitting any more tips (as it will require the user on the phone’s end to re-enter a registration key and create a new account to continue). If you wished the edit details about the user instead, you can click the edit button and make changes to the users information.
+          div(class='modal-footer')
+            button(type='button' class='btn btn-default' data-dismiss='modal') Close
     script(src='https://code.jquery.com/jquery-3.1.1.min.js')
     script.
 
-      $(function() { 
+      $(function() {
 
         $('.editlink').on('click', function(){
 
@@ -76,7 +72,7 @@ block content
           Location.attr('style', 'border: 2px solid #000;');
           $('#edit' + id).text('Confirm');
           $('#edit' + id).click(function() {
-          
+
             $.ajax({
 
                 method: "POST",
@@ -84,7 +80,7 @@ block content
                 url: "/editUser",
 
                 data: { id:  id, FirstName: FirstName.text(), LastName: LastName.text(), Email: Email.text(), Phone_Number: Phone_Number.text(), Company: Company.text(), Location: Location.text() },
-                
+
                 success: function(response) {
                             window.location = '/users';
                         }

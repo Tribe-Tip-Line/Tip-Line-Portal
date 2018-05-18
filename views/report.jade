@@ -2,6 +2,8 @@ extends layout
 block content
   .container
     h2 Reports
+      span(class='clickableIcon')
+        i(class="fas fa-info-circle", data-toggle="modal", data-target="#informationModal")
     .success
     .error
     table.table
@@ -42,55 +44,76 @@ block content
                a(href='/deleteReport?id=#{item["_id"]}', onclick='return confirm("You are going to delete this report. Continue?")') Delete
                | &nbsp;&nbsp;
                a(href='/banUser?user_id=#{item["user_id"]}', onclick='return confirm("You are going to ban the user that sent this report. Continue?")') Ban
-          div(id='myModal' + count, class='modal fade', tabindex="-1", role='dialog', aria-labelledby="exampleModalLabel", aria-hidden="true")
-              div(class='modal-dialog modal-xl' role='document')
-                div(class='modal-content')
-                  div(class='modal-header')
-                    button(type='button' class='close' data-dismiss='modal') &times;
-                    h3(class='modal-title') #{data[count]['title']}
-                  div(class='modal-body')
-                    p
-                      b Date: </b> #{data[count]['date_time']}
-                    p
-                      b Flight #: </b> #{data[count]['flight_num']}
-                    if data[count]['coordinates']
-                        p
-                          b Location: </b>
-                          div Latitude: #{data[count]['coordinates']['latitude']}
-                          div Longitude: #{data[count]['coordinates']['longitude']}
-                    p
-                      b Description:</b> #{data[count]['description']}
-                    if data[count]['city']
-                        p
-                         b City:</b> #{data[count]['city']}, #{data[count]['country']}
-                    if data[count]['additional_email']
-                        p
-                         b Email (Recipient):</b> #{data[count]['additional_email']}
-                    p
-                     b Status:</b> #{data[count]['status']}
-                    p
-                      b Multimedia:
-                    p
-                    - var links = data[count].URLs
-                    if links
-                      each link, i in links
-                        if link.includes("video")
-                          a(href=link, target='_blank')
-                            button(type='button' class='btn btn-default') Video Link
-                            | &nbsp;&nbsp;
-                        else
-                          a(href=link, target='_blank')
-                            img(src=link style='width:80px;height:80px;')
-                            | &nbsp;&nbsp;
-                  div(class='modal-footer')
-                    button(type='button' class='btn btn-default' data-dismiss='modal') Close
 
+          div(id='myModal' + count, class='modal fade', tabindex="-1", role='dialog', aria-labelledby="exampleModalLabel", aria-hidden="true")
+            div(class='modal-dialog modal-xl' role='document')
+              div(class='modal-content')
+                div(class='modal-header')
+                  button(type='button' class='close' data-dismiss='modal') &times;
+                  h3(class='modal-title') #{data[count]['title']}
+                div(class='modal-body')
+                  p
+                    b User Id: </b> #{data[count]['user_id']}
+                  p
+                    b Date: </b> #{data[count]['date_time']}
+                  p
+                    b Flight #: </b> #{data[count]['flight_num']}
+                  if data[count]['coordinates']
+                      p
+                        b Location: </b>
+                        div Latitude: #{data[count]['coordinates']['latitude']}
+                        div Longitude: #{data[count]['coordinates']['longitude']}
+                  p
+                    b Description:</b> #{data[count]['description']}
+                  if data[count]['city']
+                      p
+                       b City:</b> #{data[count]['city']}, #{data[count]['country']}
+                  if data[count]['additional_email']
+                      p
+                       b Email (Recipient):</b> #{data[count]['additional_email']}
+                  p
+                   b Status:</b> #{data[count]['status']}
+                  p
+                    b Multimedia:
+                  p
+                  - var links = data[count].URLs
+                  if links
+                    each link, i in links
+                      if link.includes("video")
+                        a(href=link, target='_blank')
+                          button(type='button' class='btn btn-default') Video Link
+                          | &nbsp;&nbsp;
+                      else
+                        a(href=link, target='_blank')
+                          img(src=link style='width:80px;height:80px;')
+                          | &nbsp;&nbsp;
+                div(class='modal-footer')
+                  button(type='button' class='btn btn-default' data-dismiss='modal') Close
+
+          div(id="informationModal", class='modal fade', tabindex="-1", role='dialog', aria-labelledby="exampleModalLabel", aria-hidden="true")
+            div(class='modal-dialog modal-xl' role='document')
+              div(class='modal-content')
+                div(class='modal-header')
+                  button(type='button' class='close' data-dismiss='modal') &times;
+                  h3(class='modal-title') Report Page Information
+                div(class='modal-body')
+                  p The Report Page is where you can view and change the status of reports.
+                  p
+                  h5 Actions Column
+                  p In the actions column you have the ability to change the status of the report, delete the report, and ban the user who submitted the report.
+                  p
+                  h5 Changing Status
+                  p There are currently 2 status options: “Responders Alerted” and “Completed”. When you change the status of a report, the user who submitted the report will be able to see that the status has changed. You can change the status of a report by clicking on the “change status” button in the action column of the report.
+                  p
+                  h5 Getting Report Information
+                  p To get more information about a specific report, you can click on the report in question in the table and be able to see all linked multimedia and a description.
+                div(class='modal-footer')
+                  button(type='button' class='btn btn-default' data-dismiss='modal') Close
           - count = count + 1
 
     script(src='https://code.jquery.com/jquery-3.1.1.min.js')
     script.
       $(function() {
-
         $('.editlink').on('click', function(){
           console.log("hello!");
           var id = $(this).data('id');
@@ -99,19 +122,16 @@ block content
           //- status.attr('contentEditable', 'true');
           //- status.attr('style', 'border: 2px solid #000;');
           if (status.text() === 'Complete') {
-            status.text('Responders Alerted');   
+            status.text('Responders Alerted');
           } else {
             status.text('Complete');
           }
           $.ajax({
             method: "POST",
-
             url: "/editReport",
-
             data: { id:  id, status: status.text() },
-
             success: function(response) {
-                        window.location = '/reports';
+              window.location = '/reports';
             }
           });
         });

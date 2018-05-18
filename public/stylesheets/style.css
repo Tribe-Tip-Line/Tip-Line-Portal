@@ -4,6 +4,14 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+i {
+  margin-left: .25em;
+}
+
+.clickableIcon {
+  cursor: pointer;
+}
+
 .clickable {
   cursor: pointer;
 }
@@ -40,7 +48,7 @@ body {
   padding: 30px 38px 66px;
   margin: 0 auto;
   background-color: #eee;
-  border: 3px solid rgba(0,0,0,0.1);  
+  border: 3px solid rgba(0,0,0,0.1);
   }
 
 .form-signin-heading {
