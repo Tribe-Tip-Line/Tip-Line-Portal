@@ -7,18 +7,25 @@ block content
     .success
     .error
     form(id='form1' action='/addKey' method= 'post')
+        input#location(type='text', name='location', placeholder='Training Location', value='')
+        | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         input#subbtn.btn(type='submit', name='sub', value='Add Key')
+    p
     table.table
       tbody
         tr
           th Key
+          th Training Location
+          th Date
           th Action
         if data.length
          each item in data
           tr
             td #{item['key']}
+            td #{item['location']}
+            td #{item['date']}
             td
-               a(href='/deleteKey?id=#{item["_id"]}', onclick='return confirm("You are going to delete this key. Continue?")') Delete
+              a(href='/deleteKey?id=#{item["_id"]}', onclick='return confirm("You are going to delete this key. Continue?")') Delete
     div(id="informationModal", class='modal fade', tabindex="-1", role='dialog', aria-labelledby="exampleModalLabel", aria-hidden="true")
       div(class='modal-dialog modal-xl' role='document')
         div(class='modal-content')
