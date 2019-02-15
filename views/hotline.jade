@@ -13,20 +13,28 @@ block content
           td(style='text-align: center')
             input#country(type='text', name='country', placeholder='Country', value='')
             | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            input#countryabbrev(type='text', name='countryabbrev', placeholder='Country Abbreviation', value='')
+            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             input#number(type='text', name='number', placeholder='Number', value='')
+            | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            input#classification(type='text', name='classification', placeholder='Classification', value='')
             | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             input#subbtn.btn(type='submit', name='sub', value='Add Number')
     table.table
       tbody
         tr
           th Country
+          th Abbreviation
           th Number
+          th Classification
           th Action
         if data.length
          each item in data
           tr(id='#{item["_id"]}')
             td#countryCell #{item['country']}
+            td#countryabbrevCell #{item['country_code']}
             td#numberCell #{item['number']}
+            td#classificationCell #{item['classification']}
             td
                a.editlink(href='javascript:void(0)', data-id='#{item["_id"]}', id='edit' + '#{item["_id"]}') Edit
                | &nbsp;&nbsp;
@@ -52,9 +60,15 @@ block content
           var country = $('#' + id).find("td[id='countryCell']");
           country.attr('contentEditable', 'true');
           country.attr('style', 'border: 2px solid #000;');
+          var countryabbrev = $('#' + id).find("td[id='countryabbrevCell']");
+          countryabbrev.attr('contentEditable', 'true');
+          countryabbrev.attr('style', 'border: 2px solid #000;');
           var number = $('#' + id).find("td[id='numberCell']");
           number.attr('contentEditable', 'true');
           number.attr('style', 'border: 2px solid #000;');
+          var classification = $('#' + id).find("td[id='classificationCell']");
+          classification.attr('contentEditable', 'true');
+          classification.attr('style', 'border: 2px solid #000;');
           $('#edit' + id).text('Confirm');
           $('#edit' + id).click(function() {
 
@@ -63,8 +77,8 @@ block content
                 method: "POST",
 
                 url: "/editNumber",
-
-                data: { id:  id, country: country.text(), number: number.text() },
+                // figure this out
+                data: { id:  id, country: country.text(), countryabbrev: countryabbrev.text(), number: number.text(), classification: classification.text() },
 
                 success: function(response) {
                             window.location = '/numbers';

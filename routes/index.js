@@ -91,7 +91,7 @@ router.get('/keys', function(req, res, next) {
 
     data = '';
 
-    db.collection('registration_keys').find().toArray(function(err, docs) {
+    db.collection('registration_keys').find().toArray(function(err, docs){
 
       if(err) throw err;
 
@@ -183,11 +183,7 @@ router.post('/addKey', function(req, res, next) {
 
     var strVal = cryptoRandomString(10);
 
-    var date = new Date();
-
-    var strDate = date.getMonth() + "/" + date.getDate() + "/" + (date.getYear() + 1900)
-
-    var key = {  key: strVal, date: strDate, location: req.body.location };
+    var key = {  key: strVal };
 
     collection.insert(key, function(err, result) {
 
@@ -210,7 +206,7 @@ router.post('/addNumber', function(req, res, next) {
 
     var collection = db.collection('hotline_numbers');
 
-    var number = {  country: req.body.country, number: req.body.number };
+    var number = {  country: req.body.country, country_code: req.body.countryabbrev, number: req.body.number, classification: req.body.classification };
 
     collection.insert(number, function(err, result) {
 
@@ -430,11 +426,8 @@ router.post('/attemptLogin', function (req, res) {
           if (result == true) {
             req.session.authenticated = true;
             req.session.save(function(){
-            req.session.authenticated = true;
-            if (req.body.username == "TipLineApp") {
-              req.session.isAdmin = true;
-            }
-          });
+              req.session.authenticated = true;
+            });
             console.log(req.session.authenticated);
             res.redirect('/reports');
           } else {
