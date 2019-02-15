@@ -210,7 +210,7 @@ router.post('/addNumber', function(req, res, next) {
 
     var collection = db.collection('hotline_numbers');
 
-    var number = {  country: req.body.country, number: req.body.number };
+    var number = {  country: req.body.country, country_code: req.body.countryabbrev, number: req.body.number, classification: req.body.classification };
 
     collection.insert(number, function(err, result) {
 
